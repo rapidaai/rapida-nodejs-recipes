@@ -6,6 +6,18 @@ import {
   CreatePhoneCallRequest,
 } from "@rapidaai/nodejs";
 
+//
+
+// let connectionCfg = ConnectionConfig.DefaultConnectionConfig(
+//   ConnectionConfig.WithPersonalToken({
+//     Authorization: "YOUR_API_KEY_PLACEHOLDER",
+//     AuthId: "AUTH_ID",
+//     ProjectId: "PROJECT_ID",
+//   })
+// );
+
+//
+
 let connectionCfg = ConnectionConfig.DefaultConnectionConfig(
   ConnectionConfig.WithSDK({
     ApiKey: "YOUR_API_KEY_PLACEHOLDER",
