@@ -1,6 +1,8 @@
 import {
   ConnectionConfig,
   Paginate,
+  GetAllAssistant,
+  GetAssistantConversation,
   GetAssistantRequest,
   GetAllAssistantRequest,
   GetAssistantConversationRequest,
@@ -15,9 +17,10 @@ import {
   GetAllAssistantAnalysisRequest,
   GetAssistantWebhookLogRequest,
   GetAllAssistantWebhookLogRequest,
+  GetAssistant,
 } from "@rapidaai/nodejs";
 
-const connectionConfig = ConnectionConfig.DefaultConnectionConfig(
+const connectionCfg = ConnectionConfig.DefaultConnectionConfig(
   ConnectionConfig.WithSDK({
     ApiKey: process.env.RAPIDA_PROJECT_CREDENTIAL,
   })
@@ -29,11 +32,8 @@ async function getAssistant(assistantId, providerModelId) {
   if (providerModelId) {
     request.setAssistantProviderModelId(providerModelId);
   }
-
   try {
-    const response = await connectionConfig.assistantClient.getAssistant(
-      request
-    );
+    const response = await GetAssistant(connectionCfg, request);
     console.log("Assistant Response:", response.toObject());
   } catch (error) {
     console.error("Error with GetAssistant call:", error);
@@ -49,9 +49,7 @@ async function getAllAssistant(page = 0, pageSize = 20) {
   request.setPaginate(pagination);
 
   try {
-    const response = await connectionConfig.assistantClient.getAllAssistant(
-      request
-    );
+    const response = await GetAllAssistant(connectionCfg, request);
     console.log("All Assistants Response:", response.toObject());
   } catch (error) {
     console.error("Error with GetAllAssistant call:", error);
@@ -65,8 +63,7 @@ async function getAssistantConversation(assistantId, conversationId, fields) {
   request.setSelectors(fields);
 
   try {
-    const response =
-      await connectionConfig.assistantClient.getAssistantConversation(request);
+    const response = await GetAssistantConversation(request);
     console.log("Assistant Conversation Response:", response.toObject());
   } catch (error) {
     console.error("Error with GetAssistantConversation call:", error);
@@ -87,10 +84,7 @@ async function getAllAssistantConversation(
   request.setPaginate(pagination);
 
   try {
-    const response =
-      await connectionConfig.assistantClient.getAllAssistantConversation(
-        request
-      );
+    const response = await GetAllAssistantConversation(connectionCfg, request);
     console.log("All Assistant Conversations Response:", response.toObject());
   } catch (error) {
     console.error("Error with GetAllAssistantConversation call:", error);
@@ -103,9 +97,7 @@ async function getAssistantWebhook(assistantId, webhookId) {
   request.setId(webhookId);
 
   try {
-    const response = await connectionConfig.assistantClient.getAssistantWebhook(
-      request
-    );
+    const response = await GetAssistantWebhook(request);
     console.log("Assistant Webhook Response:", response.toObject());
   } catch (error) {
     console.error("Error with GetAssistantWebhook call:", error);
@@ -122,8 +114,7 @@ async function getAllAssistantWebhook(assistantId, page = 0, pageSize = 20) {
   request.setPaginate(pagination);
 
   try {
-    const response =
-      await connectionConfig.assistantClient.getAllAssistantWebhook(request);
+    const response = await GetAllAssistantWebhook(request);
     console.log("All Assistant Webhooks Response:", response.toObject());
   } catch (error) {
     console.error("Error with GetAllAssistantWebhook call:", error);
@@ -136,8 +127,7 @@ async function getAssistantKnowledge(assistantId, knowledgeId) {
   request.setId(knowledgeId);
 
   try {
-    const response =
-      await connectionConfig.assistantClient.getAssistantKnowledge(request);
+    const response = await GetAssistantKnowledge(request);
     console.log("Assistant Knowledge Response:", response.toObject());
   } catch (error) {
     console.error("Error with GetAssistantKnowledge call:", error);
@@ -154,8 +144,7 @@ async function getAllAssistantKnowledge(assistantId, page = 0, pageSize = 20) {
   request.setPaginate(pagination);
 
   try {
-    const response =
-      await connectionConfig.assistantClient.getAllAssistantKnowledge(request);
+    const response = await GetAllAssistantKnowledge(request);
     console.log("All Assistant Knowledge Response:", response.toObject());
   } catch (error) {
     console.error("Error with GetAllAssistantKnowledge call:", error);
@@ -168,9 +157,7 @@ async function getAssistantTool(assistantId, toolId) {
   request.setId(toolId);
 
   try {
-    const response = await connectionConfig.assistantClient.getAssistantTool(
-      request
-    );
+    const response = await GetAssistantTool(request);
     console.log("Assistant Tool Response:", response.toObject());
   } catch (error) {
     console.error("Error with GetAssistantTool call:", error);
@@ -187,9 +174,7 @@ async function getAllAssistantTool(assistantId, page = 0, pageSize = 20) {
   request.setPaginate(pagination);
 
   try {
-    const response = await connectionConfig.assistantClient.getAllAssistantTool(
-      request
-    );
+    const response = await GetAllAssistantTool(request);
     console.log("All Assistant Tools Response:", response.toObject());
   } catch (error) {
     console.error("Error with GetAllAssistantTool call:", error);
@@ -202,8 +187,7 @@ async function getAssistantAnalysis(assistantId, analysisId) {
   request.setId(analysisId);
 
   try {
-    const response =
-      await connectionConfig.assistantClient.getAssistantAnalysis(request);
+    const response = await GetAssistantAnalysis(request);
     console.log("Assistant Analysis Response:", response.toObject());
   } catch (error) {
     console.error("Error with GetAssistantAnalysis call:", error);
@@ -220,21 +204,18 @@ async function getAllAssistantAnalysis(assistantId, page = 0, pageSize = 20) {
   request.setPaginate(pagination);
 
   try {
-    const response =
-      await connectionConfig.assistantClient.getAllAssistantAnalysis(request);
+    const response = await GetAllAssistantAnalysis(request);
     console.log("All Assistant Analyses Response:", response.toObject());
   } catch (error) {
     console.error("Error with GetAllAssistantAnalysis call:", error);
   }
 }
 
-async function getAssistantWebhookLog(webhookLogId) {
+async function getAssistantWebhookLog(webhookLogId, projectId) {
   const request = new GetAssistantWebhookLogRequest();
   request.setId(webhookLogId);
-
   try {
-    const response =
-      await connectionConfig.assistantClient.getAssistantWebhookLog(request);
+    const response = await GetAssistantWebhookLog(request);
     console.log("Assistant Webhook Log Response:", response.toObject());
   } catch (error) {
     console.error("Error with GetAssistantWebhookLog call:", error);
@@ -250,8 +231,7 @@ async function getAllAssistantWebhookLog(page = 0, pageSize = 20) {
   request.setPaginate(pagination);
 
   try {
-    const response =
-      await connectionConfig.assistantClient.getAllAssistantWebhookLog(request);
+    const response = await GetAllAssistantWebhookLog(request);
     console.log("All Assistant Webhook Logs Response:", response.toObject());
   } catch (error) {
     console.error("Error with GetAllAssistantWebhookLog call:", error);
