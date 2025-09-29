@@ -59,7 +59,7 @@ async function getAllAssistant(page = 0, pageSize = 20) {
 async function getAssistantConversation(assistantId, conversationId, fields) {
   const request = new GetAssistantConversationRequest();
   request.setAssistantId(assistantId);
-  request.setAssistantConversationId(conversationId);
+  request.setId(conversationId);
   request.setSelectors(fields);
 
   try {
