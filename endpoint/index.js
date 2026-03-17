@@ -2,17 +2,19 @@ import {
   Invoke,
   ConnectionConfig,
   GetEndpoint,
+  GetAllEndpoint,
+  GetEndpointLog,
+  GetAllEndpointLog,
   InvokeRequest,
   EndpointDefinition,
   StringToAny,
   GetEndpointRequest,
   GetAllEndpointRequest,
-  Paginate,
-  Criteria,
   GetEndpointLogRequest,
   GetAllEndpointLogRequest,
+  Paginate,
+  Criteria,
 } from "@rapidaai/nodejs";
-// ... existing imports ...
 
 /**
  * Invoke endpoint with provided arguments, metadata, and options.
@@ -69,7 +71,7 @@ async function getAllEndpoints(connectionCfg) {
 
   let paginate = new Paginate();
   paginate.setPage(0);
-  paginate.setPagesize(20);
+  paginate.setPageSize(20);
   request.setPaginate(paginate);
 
   let criteria = new Criteria();
@@ -77,7 +79,7 @@ async function getAllEndpoints(connectionCfg) {
   criteria.setValue("MATCHING _VAULE");
   criteria.setLogic("should" || "must");
   request.addCriterias(criteria);
-  const response = await GetAllEndpoints(connectionCfg, request);
+  const response = await GetAllEndpoint(connectionCfg, request);
   if (response.getError()) {
     console.error(
       "Error fetching all endpoints:",
@@ -115,7 +117,7 @@ async function getAllEndpointLogs(connectionCfg) {
 
   let paginate = new Paginate();
   paginate.setPage(0);
-  paginate.setPagesize(20);
+  paginate.setPageSize(20);
   request.setPaginate(paginate);
 
   let criteria = new Criteria();

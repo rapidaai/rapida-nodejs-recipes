@@ -33,7 +33,7 @@ phoneCallRequest.setTonumber("TO_NUMBER_PLACEHOLDER");
 
 const bulkPhoneCallRequest = new CreateBulkPhoneCallRequest();
 bulkPhoneCallRequest.addPhonecalls(phoneCallRequest);
-CreateBulkPhoneCallRequest(connectionCfg, phoneCallRequest)
+CreateBulkPhoneCall(connectionCfg, bulkPhoneCallRequest)
   .then((x) => {
     if (x.getSuccess()) {
       console.dir(x.getData().toObject());
