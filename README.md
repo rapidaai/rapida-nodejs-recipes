@@ -31,8 +31,27 @@ Below are some common use cases of the SDK with examples:
 | Make a bulk phone call        | `node call/make-bulk-phone-calls.js`  | Example script for making bulk phone calls     |
 | Assistant management          | `node assistant/index.js`             | Examples for getting assistants, conversations, webhooks, tools, knowledge, and analysis |
 | Endpoint management           | `node endpoint/index.js`              | Examples for invoking endpoints and managing endpoint logs |
+| AgentKit server               | `node agentkit/index.js`              | Example gRPC server for hosting a custom AgentKit voice agent |
 
 Refer to the example scripts provided in the SDK repository to understand how to implement these use cases.
+
+## AgentKit Server Example
+
+The AgentKit example hosts a bidirectional gRPC server that responds to Rapida conversation streams. It acknowledges initialization/configuration messages, echoes text user messages, and sends a text response for audio messages.
+
+```bash
+# Optional. Defaults to 50051.
+export AGENTKIT_PORT=50051
+
+# Optional. Enables token auth on the authorization metadata key.
+export AGENTKIT_TOKEN=<shared-token>
+
+node agentkit/index.js
+```
+
+Register the server address as the AgentKit provider URL for your assistant deployment. If you use `AGENTKIT_TOKEN`, configure Rapida to send the same token as gRPC metadata using the `authorization` key.
+
+This example requires a version of `@rapidaai/nodejs` that includes the AgentKit exports.
 
 ## Regression / Automation Tests
 
