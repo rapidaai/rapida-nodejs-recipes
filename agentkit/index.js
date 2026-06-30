@@ -1,6 +1,7 @@
 import {
   AgentKitAgent,
   AgentKitServer,
+  Middleware,
 } from "@rapidaai/nodejs";
 
 /**
@@ -52,11 +53,22 @@ class EchoAgent extends AgentKitAgent {
       if (this.isTextMessage(request)) {
         const messageId = this.getMessageId(request);
         const text = this.getUserText(request);
+        const command = text?.trim().toLowerCase();
 
         console.log("User message received", {
           messageId,
           text,
         });
+
+        if (command === "disconnect") {
+          console.log("Disconnect requested", { messageId });
+          call.write(
+            this.terminateCall(messageId, {
+              reason: "user_requested_disconnect",
+            })
+          );
+          return;
+        }
 
         call.write(
           this.assistantResponse(
@@ -112,20 +124,38 @@ class EchoAgent extends AgentKitAgent {
 
 // Port defaults to 50051 to match the SDK AgentKit server default.
 const port = Number(process.env.AGENTKIT_PORT || 50051);
+const httpHealthPort = process.env.AGENTKIT_HTTP_HEALTH_PORT
+  ? Number(process.env.AGENTKIT_HTTP_HEALTH_PORT)
+  : undefined;
 
 // If AGENTKIT_TOKEN is set, incoming streams must include matching gRPC
 // metadata under the "authorization" key.
 const token = process.env.AGENTKIT_TOKEN;
 
+class AuthMiddleware extends Middleware {
+  constructor(token) {
+    super();
+    this.token = token;
+  }
+
+  handle({ metadataValue }) {
+    return metadataValue("authorization") === this.token;
+  }
+}
+
+const httpHealthCheck = httpHealthPort
+  ? {
+      host: process.env.AGENTKIT_HTTP_HEALTH_HOST || "0.0.0.0",
+      port: httpHealthPort,
+      path: process.env.AGENTKIT_HTTP_HEALTH_PATH || "/healthz",
+    }
+  : undefined;
+
 const server = new AgentKitServer({
   agent: new EchoAgent(),
   port,
-  authConfig: token
-    ? {
-        enabled: true,
-        token,
-      }
-    : undefined,
+  middleware: token ? [new AuthMiddleware(token)] : [],
+  httpHealthCheck,
 });
 
 await server.start();
@@ -133,8 +163,14 @@ await server.start();
 console.log(`AgentKit server listening on ${server.address}`);
 console.log("Register this URL in your AgentKit assistant provider deployment.");
 
+if (server.httpHealthAddress) {
+  console.log(`HTTP health check listening on ${server.httpHealthAddress}`);
+}
+
 if (token) {
-  console.log("Token auth is enabled. Send it as gRPC metadata: authorization");
+  console.log(
+    "AgentKit middleware is enabled. Send matching gRPC metadata: authorization"
+  );
 }
 
 // Gracefully stop the gRPC server when the process is interrupted.
