@@ -7,16 +7,16 @@ import {
 
 let connectionCfg = ConnectionConfig.DefaultConnectionConfig(
   ConnectionConfig.WithSDK({
-    ApiKey: "YOUR_API_KEY_PLACEHOLDER",
+    ApiKey: "1fee767205d6fc1926dd3e4d072ba7d51b6e7aa71d592185f1dbe1b63752421c",
   })
 );
 const phoneCallRequest = new CreatePhoneCallRequest();
 // define assistant
 const assistant = new AssistantDefinition();
-assistant.setAssistantid("ASSISTANT_ID_PLACEHOLDER");
-assistant.setVersion("VERSION_PLACEHOLDER");
+assistant.setAssistantid("2344766176627785728");
+// assistant.setVersion("VERSION_PLACEHOLDER");
 phoneCallRequest.setAssistant(assistant);
-phoneCallRequest.setTonumber("TO_NUMBER_PLACEHOLDER");
+phoneCallRequest.setTonumber("9110823449");
 
 CreatePhoneCall(connectionCfg, phoneCallRequest)
   .then((x) => {

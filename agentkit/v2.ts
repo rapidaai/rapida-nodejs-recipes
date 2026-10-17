@@ -1,5 +1,6 @@
 import {
   Agent,
+  AgentControlTypes,
   AgentKitServer,
   Middleware,
   type AgentKitMiddlewareContext,
@@ -99,6 +100,23 @@ class EchoAgent extends Agent {
       await this.endConversation({
         reason: "user_requested_disconnect",
       });
+      return;
+    }
+
+    if (text?.toLowerCase() === "noninterruptible") {
+      console.log("Sending non-interruptible response", {
+        contextId: this.contextId,
+        messageId: user.id,
+      });
+
+      await this.block({ id: user.id, types: [AgentControlTypes.bargeIn] });
+      try {
+        await this.reply(
+          "This response is protected from barge-in until it finishes."
+        );
+      } finally {
+        await this.unblock({ id: user.id, types: [AgentControlTypes.bargeIn] });
+      }
       return;
     }
 

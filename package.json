@@ -1,7 +1,7 @@
 {
   "type": "module",
   "dependencies": {
-    "@rapidaai/nodejs": "1.1.0-alpha.4"
+    "@rapidaai/nodejs": "1.1.1-beta.0"
   },
   "scripts": {
     "test": "node tests/index.js"

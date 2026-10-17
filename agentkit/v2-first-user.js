@@ -7,6 +7,7 @@ import {
 
 const port = Number(process.env.AGENTKIT_PORT || 50051);
 
+
 class FirstUserAgent extends Agent {
   async onInitialization(initialization) {
     const messageId = `agentkit-user-${randomUUID()}`;
@@ -37,9 +38,33 @@ class FirstUserAgent extends Agent {
     });
   }
 
+  currentMessageContext = {
+    messageId: null,
+  };
+
+  async onInterruption(interruption) {
+    console.log("Received interruption", interruption);
+  }
+
   async onUser(user) {
+    console.log("Received user message", {
+      contextId: user.contextId,
+      messageId: user.id,
+      userText: user.text,
+      ctx: this.contextId,
+    });
+
+    const contextId = this.contextId;
+    const messageId = user.id;
+    if (this.currentMessageContext.messageId !== messageId) {
+      console.log(
+        `[${contextId}][${messageId}] :: Aborting Message for ${this.currentMessageContext.messageId}`,
+      );
+    }
     const text = user.text?.trim();
 
+
+    this.currentMessageContext = { messageId };
     if (text?.toLowerCase() === "disconnect") {
       await this.endConversation({
         reason: "user_requested_disconnect",
@@ -47,7 +72,11 @@ class FirstUserAgent extends Agent {
       return;
     }
 
-    await this.reply(text ? `You said: ${text}` : "Audio received.");
+    await this.reply({
+      id: user.id,
+      text: user.text,
+      completed: true
+    })
   }
 }
 
